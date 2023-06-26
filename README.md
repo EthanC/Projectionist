@@ -15,6 +15,7 @@ Although not required, a [Discord Webhook](https://support.discord.com/hc/en-us/
 
 **Environment Variables:**
 
+-   `PROJECTIONIST_PORT`: HTTP port to bind the Projectionist API to. Default is `8000`.
 -   `PLEX_EVENT_MEDIAPLAY`: Boolean toggle for the [`media.play`](https://support.plex.tv/articles/115002267687-webhooks/) Plex event. Default is False.
 -   `TMDB_API_KEY`: API Key for [The Movie Database (TMDB)](https://developer.themoviedb.org/docs), required to enable media thumbnails.
 -   `DISCORD_NOTIFY_WEBHOOK`: [Discord Webhook](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks) URL to receive available username notifications.
@@ -32,6 +33,7 @@ services:
     container_name: projectionist
     image: ethanchrisp/projectionist:latest
     environment:
+      PROJECTIONIST_PORT: 8000
       PLEX_EVENT_MEDIAPLAY: true
       TMDB_API_KEY: XXXXXXXX
       DISCORD_NOTIFY_WEBHOOK: https://discord.com/api/webhooks/XXXXXXXX/XXXXXXXX

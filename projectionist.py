@@ -109,7 +109,7 @@ class Projectionist:
             logger.success(f"Enabled logging to Discord webhook")
             logger.trace(logUrl)
 
-        uvicorn.run(self.app)
+        uvicorn.run(self.app, port=int(environ.get("PROJECTIONIST_PORT", 8000)))
 
     def Notify(self: Self, embed: DiscordEmbed) -> None:
         """Report Plex events to the configured Discord webhook."""
