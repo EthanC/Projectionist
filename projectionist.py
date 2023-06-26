@@ -1,3 +1,4 @@
+import json
 import logging
 from datetime import datetime
 from os import environ
@@ -6,7 +7,7 @@ from typing import Any, Dict, Optional, Self
 import dotenv
 import uvicorn
 from discord_webhook import DiscordEmbed, DiscordWebhook
-from fastapi import Body, FastAPI, HTTPException, Request
+from fastapi import FastAPI, Form, HTTPException, Request
 from loguru import logger
 from notifiers.logging import NotificationHandler
 
@@ -26,8 +27,10 @@ class Projectionist:
         self.app: FastAPI = FastAPI()
 
         @self.app.post("/")
-        async def Receive(req: Request, payload: Dict[str, Any] = Body()) -> None:
+        async def Receive(req: Request, payload: str = Form()) -> None:
             """Determine the proper event handler for incoming HTTP POST requests."""
+
+            payload: Dict[str, Any] = json.loads(payload)
 
             logger.debug(
                 f"Received HTTP POST to / from {req.client.host}:{req.client.port}"
