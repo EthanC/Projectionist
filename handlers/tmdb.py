@@ -28,9 +28,9 @@ class TMDB:
 
             data = res.json()
         except Exception as e:
-            logger.error(f"Failed to fetch data for {lType} {lTitle} from TMDB, {e}")
-
-            return
+            logger.opt(exception=e).error(
+                f"Failed to fetch data for {lType} {lTitle} from TMDB"
+            )
 
         for entry in data.get("results", []):
             rTitle: str = entry.get("name") or entry.get("title")
