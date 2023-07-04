@@ -117,7 +117,7 @@ class Projectionist:
     def Notify(self: Self, embed: DiscordEmbed) -> None:
         """Report Plex events to the configured Discord webhook."""
 
-        if not (url := environ.get("DISCORD_NOTIFY_WEBHOOK")):
+        if not (url := environ.get("DISCORD_WEBHOOK_URL")):
             logger.info("Discord webhook for notifications is not set")
 
             return
