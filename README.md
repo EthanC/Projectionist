@@ -6,7 +6,7 @@
 Projectionist receives Plex webhooks and reports events via Discord.
 
 <p align="center">
-    <img src="https://i.imgur.com/0lP2n3g.png" draggable="false">
+    <img src="https://i.imgur.com/o8FnsDe.png" draggable="false">
 </p>
 
 ## Setup
