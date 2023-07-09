@@ -34,7 +34,7 @@ class Events:
                 if image := TMDB.Thumbnail(self, title, mType, year):
                     embed.set_thumbnail(image)
 
-                embed.set_url(TMDB.Info(self, title, mType))
+                embed.set_url(TMDB.Info(self, title, mType, year))
             case "episode":
                 series: str = metadata.get("grandparentTitle")
                 title: str = metadata.get("title")
