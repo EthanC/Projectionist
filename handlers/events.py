@@ -20,7 +20,9 @@ class Events:
         embed: DiscordEmbed = DiscordEmbed()
 
         if user := account.get("title"):
-            embed.set_author(f"{user} (Playing)", icon_url=account.get("thumb"))
+            embed.set_author(user, icon_url=account.get("thumb"))
+
+        embed.set_description("Now Playing")
 
         match (mType := metadata.get("type")):
             case "movie":
@@ -53,10 +55,16 @@ class Events:
                 artist: str = metadata.get("parentTitle")
 
                 embed.set_title(f"{artist} - {title}")
+            case "clip":
+                title: str = metadata.get("title")
+                subtype: str = metadata.get("subtype")
+
+                embed.set_title(f"{title} ({subtype})")
             case _:
                 logger.warning(
                     f"Payload from Plex contains an unsupported media.play metadata type ({mType})"
                 )
+                logger.debug(metadata)
 
         if library := metadata.get("librarySectionTitle"):
             embed.add_embed_field("Library", library)
@@ -78,5 +86,5 @@ class Events:
         """Function to catch known, unsupported Plex webhook events."""
 
         # https://support.plex.tv/articles/115002267687-webhooks/
-        logger.info(f"Plex event type {event} is not yet implemented.")
+        logger.info(f"Plex event type {event} is not yet implemented")
         logger.info("Contribute at https://github.com/EthanC/Projectionist")
