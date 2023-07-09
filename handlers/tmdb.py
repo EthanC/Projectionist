@@ -11,7 +11,7 @@ class TMDB:
     """Class to integrate with the TMDB API."""
 
     def FetchData(
-        self: Self, apiKey: str, lTitle: str, lType: str
+        self: Self, apiKey: str, lTitle: str, lType: str, lYear: Optional[int]
     ) -> Optional[Dict[str, Any]]:
         """Fetch data for the specified title and media type from the TMDB API."""
 
@@ -29,12 +29,13 @@ class TMDB:
             data = res.json()
         except Exception as e:
             logger.opt(exception=e).error(
-                f"Failed to fetch data for {lType} {lTitle} from TMDB"
+                f"Failed to fetch data for {lType} {lTitle} ({lYear}) from TMDB"
             )
 
         for entry in data.get("results", []):
             rTitle: str = entry.get("name") or entry.get("title")
             rType: str = entry.get("media_type")
+            rRelease: str = entry.get("release_date")
 
             # Change local type to match TMDB
             if lType == "episode":
@@ -45,9 +46,15 @@ class TMDB:
             elif lType != rType:
                 continue
 
+            if lYear and rRelease:
+                if lYear != int(rRelease.split("-")[0]):
+                    continue
+
             return entry
 
-    def Thumbnail(self: Self, lTitle: str, lType: str) -> Optional[str]:
+    def Thumbnail(
+        self: Self, lTitle: str, lType: str, lYear: Optional[int] = None
+    ) -> Optional[str]:
         """
         Return a thumbnail image URL for the specified title and media type.
         """
@@ -57,7 +64,7 @@ class TMDB:
 
             return
 
-        data: Optional[Dict[str, Any]] = TMDB.FetchData(self, key, lTitle, lType)
+        data: Optional[Dict[str, Any]] = TMDB.FetchData(self, key, lTitle, lType, lYear)
 
         if data:
             rPoster: str = data.get("poster_path")
@@ -65,9 +72,13 @@ class TMDB:
             if rPoster:
                 return f"https://image.tmdb.org/t/p/original{rPoster}"
 
-        logger.info(f"Unable to locate thumbnail for {lType} {lTitle} on TMDB")
+        logger.info(
+            f"Unable to locate thumbnail for {lType} {lTitle} ({lYear}) on TMDB"
+        )
 
-    def Info(self: Self, lTitle: str, lType: str) -> Optional[str]:
+    def Info(
+        self: Self, lTitle: str, lType: str, lYear: Optional[int] = None
+    ) -> Optional[str]:
         """Return the TMDB URL for the specified title and media type."""
 
         if not (key := environ.get("TMDB_API_KEY")):
@@ -75,7 +86,7 @@ class TMDB:
 
             return
 
-        data: Optional[Dict[str, Any]] = TMDB.FetchData(self, key, lTitle, lType)
+        data: Optional[Dict[str, Any]] = TMDB.FetchData(self, key, lTitle, lType, lYear)
 
         if data:
             rType: str = data.get("media_type")
@@ -84,4 +95,6 @@ class TMDB:
             if rID:
                 return f"https://www.themoviedb.org/{rType}/{rID}"
 
-        logger.info(f"Unable to locate media information for {lType} {lTitle} on TMDB")
+        logger.info(
+            f"Unable to locate media information for {lType} {lTitle} ({lYear}) on TMDB"
+        )

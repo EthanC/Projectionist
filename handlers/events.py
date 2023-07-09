@@ -27,10 +27,11 @@ class Events:
         match (mType := metadata.get("type")):
             case "movie":
                 title: str = metadata.get("title")
+                year: int = metadata.get("year")
 
-                embed.set_title(title)
+                embed.set_title(f"{title} ({year})")
 
-                if image := TMDB.Thumbnail(self, title, mType):
+                if image := TMDB.Thumbnail(self, title, mType, year):
                     embed.set_thumbnail(image)
 
                 embed.set_url(TMDB.Info(self, title, mType))
